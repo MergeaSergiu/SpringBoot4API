@@ -1,99 +1,43 @@
 package dev.spring.API.controller;
 
+import dev.spring.API.Dto.GroupRequest;
 import dev.spring.API.model.Group;
+import dev.spring.API.service.GroupService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
+
 
 @RestController
 @RequestMapping("/api/groups")
 public class GroupController {
 
-    private List<Group> groups = new ArrayList<>();
-    private final AtomicLong idCounter = new AtomicLong(1);
-
-    public GroupController() {
-        groups.add(
-                new Group(
-                        idCounter.getAndIncrement(),
-                        "Tech Innovators",
-                        "A group for people passionate about cutting-edge software development.",
-                        "San Francisco",
-                        "Alice Johnson",
-                        LocalDate.of(2023, 3, 15)
-                )
-        );
-
-        groups.add(
-                new Group(
-                        idCounter.getAndIncrement(),
-                        "Hiking Explorers",
-                        "Outdoor lovers who explore mountains every weekend.",
-                        "Denver",
-                        "Mark Brown",
-                        LocalDate.of(2022, 11, 2)
-                )
-        );
-
-        groups.add(
-                new Group(
-                        idCounter.getAndIncrement(),
-                        "Book Lovers Club",
-                        "A group for reading and discussing literature.",
-                        "New York",
-                        "Sophia Miller",
-                        LocalDate.of(2024, 1, 12)
-                )
-        );
-
-        groups.add(
-                new Group(
-                        idCounter.getAndIncrement(),
-                        "Cycling Community",
-                        "Cyclists sharing routes and planning events.",
-                        "Amsterdam",
-                        "Lucas van Dijk",
-                        LocalDate.of(2023, 8, 20)
-                )
-        );
-
-        groups.add(
-                new Group(
-                        idCounter.getAndIncrement(),
-                        "Photography Tribe",
-                        "Photographers who meet to share tips and do photo walks.",
-                        "Paris",
-                        "Emma Laurent",
-                        LocalDate.of(2022, 6, 5)
-                )
-        );
-
-
+    private final GroupService groupService;
+    public GroupController(GroupService groupService) {
+        this.groupService = groupService;
     }
 
-    @GetMapping("/")
-    List<Group> getAllGroups() {
-        return groups;
+    @GetMapping()
+    public ResponseEntity<List<Group>> getAllGroups() {
+        return ResponseEntity.ok(groupService.getAllGroups());
     }
 
     @GetMapping("/{id}")
-    Optional<Group> getGroupById(@PathVariable Long id) {
-     return groups.stream()
-             .filter(g -> g.id().equals(id))
-             .findFirst();
+    ResponseEntity<Optional<Group>> getGroupById(@PathVariable Long id) {
+       return ResponseEntity.ok(groupService.getById(id));
     }
 
     @DeleteMapping("/{id}")
-    void deleteGroupById(@PathVariable Long id) {
-        Optional<Group> group = getGroupById(id);
-        if (group.isPresent()) {
-            groups.remove(group.get());
-        }else{
-            System.out.println("Group not found");
-        }
+    ResponseEntity<?> deleteGroupById(@PathVariable Long id) {
+        groupService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping
+    public ResponseEntity<Long> createGroup(@RequestBody GroupRequest groupRequest) {
+        Long id = groupService.createGroup(groupRequest);
+        return ResponseEntity.ok(id);
     }
 }
