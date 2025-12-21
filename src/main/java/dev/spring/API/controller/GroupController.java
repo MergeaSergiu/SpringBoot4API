@@ -39,6 +39,6 @@ public class GroupController {
     @PostMapping
     public ResponseEntity<Long> createGroup(@RequestBody @Valid GroupRequest groupRequest) {
         Long id = groupService.createGroup(groupRequest);
-        return ResponseEntity.ok(id);
+        return ResponseEntity.status(201).body(id);
     }
 }
