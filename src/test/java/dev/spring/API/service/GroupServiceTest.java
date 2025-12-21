@@ -96,7 +96,6 @@ public class GroupServiceTest {
         Optional<Group> result = groupService.getById(testId);
         assertEquals(Optional.empty(), result);
         verify(groupRepository).findById(testId);
-
     }
 
     @Test
