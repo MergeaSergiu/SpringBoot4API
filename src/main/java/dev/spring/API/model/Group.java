@@ -1,19 +1,9 @@
 package dev.spring.API.model;
 
 import jakarta.persistence.*;
-import org.springframework.scheduling.annotation.Async;
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import java.time.LocalDate;
-
-//public record Group(
-//        Long id,
-//        String name,
-//        String description,
-//        String city,
-//        String organizer,
-//        LocalDate createdDate
-//) {
-//}
 
 
 @Entity
@@ -24,10 +14,15 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Name must not be Blank")
     String name;
+    @NotBlank(message = "Description must not be Blank")
     String description;
+    @NotBlank(message = "City must not be Blank")
     String city;
+    @NotBlank(message = "Organizer must not be Blank")
     String organizer;
+
     LocalDate createdDate;
 
  public Group(String name, String description, String city, String organizer, LocalDate createdDate) {
