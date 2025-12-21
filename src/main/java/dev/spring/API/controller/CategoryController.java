@@ -3,11 +3,9 @@ package dev.spring.API.controller;
 import dev.spring.API.Dto.CategoryRequest;
 import dev.spring.API.model.Category;
 import dev.spring.API.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,7 +20,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> createCategory(CategoryRequest categoryRequest) {
+    public ResponseEntity<Long> createCategory(@RequestBody @Valid CategoryRequest categoryRequest) {
         Long id = categoryService.createProduct(categoryRequest);
         return ResponseEntity.status(201).body(id);
     }

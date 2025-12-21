@@ -6,14 +6,18 @@ import dev.spring.API.model.Product;
 import dev.spring.API.repository.CategoryRepository;
 import dev.spring.API.repository.ProductRepository;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ProductService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
 
@@ -35,6 +39,7 @@ public class ProductService {
         newProduct.setDescription(productRequest.description());
         newProduct.setImageURL(productRequest.imageURL());
         newProduct.setCategory(category.get());
+        logger.info("Creating product:{}, {}, {}", newProduct.getName(), newProduct.getPrice(), newProduct.getStock());
 
         return productRepository.save(newProduct).getId();
     }

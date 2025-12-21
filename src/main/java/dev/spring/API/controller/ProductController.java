@@ -3,11 +3,9 @@ package dev.spring.API.controller;
 import dev.spring.API.Dto.ProductRequest;
 import dev.spring.API.model.Product;
 import dev.spring.API.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,7 +25,7 @@ public class ProductController {
      }
 
     @PostMapping
-    public ResponseEntity<Long> createProduct(ProductRequest productRequest){
+    public ResponseEntity<Long> createProduct(@RequestBody @Valid ProductRequest productRequest){
          return ResponseEntity.accepted().body(productService.createProduct(productRequest));
     }
 
