@@ -25,6 +25,18 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin
 
+  api:
+    build: .
+    container_name: spring_api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydb
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+
 volumes:
   postgres_data:
   pgadmin_data:
