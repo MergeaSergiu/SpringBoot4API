@@ -3,10 +3,9 @@ package dev.spring.API.service;
 import dev.spring.API.Dto.GroupRequest;
 import dev.spring.API.model.Group;
 import dev.spring.API.repository.GroupRepository;
+import jakarta.persistence.EntityExistsException;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +33,7 @@ public class GroupService {
     }
 
     public Long createGroup(GroupRequest groupRequest) {
+        if(groupRepository.findByName(groupRequest.name()) != null) throw new EntityExistsException("A group exists with this name");
         Group group = new Group();
         group.setName(groupRequest.name());
         group.setDescription(groupRequest.description());

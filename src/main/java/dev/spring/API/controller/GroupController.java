@@ -3,6 +3,7 @@ package dev.spring.API.controller;
 import dev.spring.API.Dto.GroupRequest;
 import dev.spring.API.model.Group;
 import dev.spring.API.service.GroupService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +37,7 @@ public class GroupController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> createGroup(@RequestBody GroupRequest groupRequest) {
+    public ResponseEntity<Long> createGroup(@RequestBody @Valid GroupRequest groupRequest) {
         Long id = groupService.createGroup(groupRequest);
         return ResponseEntity.ok(id);
     }
