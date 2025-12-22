@@ -6,12 +6,11 @@ import dev.spring.API.model.Category;
 import dev.spring.API.model.Product;
 import dev.spring.API.repository.CategoryRepository;
 import dev.spring.API.repository.ProductRepository;
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -43,8 +42,10 @@ public class ProductService {
         newProduct.setCategory(category.get());
         logger.info("Creating product:{}, {}, {}", newProduct.getName(), newProduct.getPrice(), newProduct.getStock());
 
+        Long Id = productRepository.save(newProduct).getId();
+
         rabbitMQProducer.sendMessage(newProduct);
-        return productRepository.save(newProduct).getId();
+        return Id;
     }
 
     public List<Product> getAllProducts() {
