@@ -1,6 +1,8 @@
 package dev.spring.API.error;
 
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,20 @@ public class GlobalExceptionHandler {
         logger.info("Unhandled exception occurred: {}",ex.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE.value());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(MessagingException.class)
+    public ResponseEntity<ErrorResponse> handleMessagingException(MessagingException ex) {
+        logger.info("Unhandled exception occurred: {}",ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException ex) {
+        logger.info("Unhandled exception occurred: {}",ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
 

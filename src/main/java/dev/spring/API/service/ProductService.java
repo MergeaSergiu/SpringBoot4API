@@ -1,11 +1,13 @@
 package dev.spring.API.service;
 
 import dev.spring.API.Dto.ProductRequest;
+import dev.spring.API.Dto.ProductResponse;
 import dev.spring.API.component.RabbitMQProducer;
 import dev.spring.API.model.Category;
 import dev.spring.API.model.Product;
 import dev.spring.API.repository.CategoryRepository;
 import dev.spring.API.repository.ProductRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -48,7 +50,29 @@ public class ProductService {
         return Id;
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<ProductResponse> getAllProducts() {
+        return
+                productRepository.findAll().stream().map(this::toDto).toList();
+    }
+
+    public void deleteProduct(Long id) {
+        if(!productRepository.existsById(id)) {
+            throw new EntityNotFoundException("Product not found");
+        }
+        productRepository.deleteById(id);
+    }
+
+    private ProductResponse toDto(Product product) {
+        return new ProductResponse(
+                product.getId(),
+                product.getName(),
+                product.getDescription(),
+                product.getPrice(),
+                product.getStock(),
+                product.getImageURL(),
+                product.getCreatedDate(),
+                product.getUpdatedDate(),
+                product.getCategory().getId()
+        );
     }
 }

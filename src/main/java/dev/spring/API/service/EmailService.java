@@ -1,9 +1,6 @@
 package dev.spring.API.service;
 
-import dev.spring.API.Dto.EmailDetails;
 import dev.spring.API.model.Product;
-import jakarta.mail.MessagingException;
-import jakarta.persistence.EntityExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.SimpleMailMessage;

@@ -18,7 +18,7 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public Long createProduct(CategoryRequest categoryRequest) {
+    public Long createCategory(CategoryRequest categoryRequest) {
         Category category = new Category();
         category.setName(categoryRequest.name());
         logger.info("Creating category: {}", category.getName());

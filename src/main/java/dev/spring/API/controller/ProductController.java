@@ -1,6 +1,7 @@
 package dev.spring.API.controller;
 
 import dev.spring.API.Dto.ProductRequest;
+import dev.spring.API.Dto.ProductResponse;
 import dev.spring.API.model.Product;
 import dev.spring.API.service.ProductService;
 import jakarta.validation.Valid;
@@ -20,13 +21,19 @@ public class ProductController {
      }
 
      @GetMapping
-     public ResponseEntity<List<Product>> getAllProducts(){
+     public ResponseEntity<List<ProductResponse>> getAllProducts(){
          return ResponseEntity.status(200).body(productService.getAllProducts());
      }
 
     @PostMapping
     public ResponseEntity<Long> createProduct(@RequestBody @Valid ProductRequest productRequest){
          return ResponseEntity.accepted().body(productService.createProduct(productRequest));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteProduct(@RequestParam Long id){
+         productService.deleteProduct(id);
+         return ResponseEntity.noContent().build();
     }
 
 }
