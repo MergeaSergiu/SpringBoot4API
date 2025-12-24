@@ -25,6 +25,30 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin
 
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq-container
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: username
+      RABBITMQ_DEFAULT_PASS: admin
+
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  maildev:
+    image: maildev/maildev
+    container_name: maildev-container
+    ports:
+      - "1025:1025"
+      - "1080:1080"
+    environment:
+      MAILDEV_SMTP_BIND_HOST: 0.0.0.0
+      MAILDEV_WEB_BIND_HOST: 0.0.0.0
+
+
 #  api:
 #    build: .
 #    container_name: spring_api
@@ -40,3 +64,4 @@ services:
 volumes:
   postgres_data:
   pgadmin_data:
+  rabbitmq_data:

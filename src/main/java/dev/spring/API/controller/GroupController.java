@@ -41,4 +41,6 @@ public class GroupController {
         Long id = groupService.createGroup(groupRequest);
         return ResponseEntity.status(201).body(id);
     }
+
+
 }

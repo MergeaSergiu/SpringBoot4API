@@ -21,7 +21,7 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<Long> createCategory(@RequestBody @Valid CategoryRequest categoryRequest) {
-        Long id = categoryService.createProduct(categoryRequest);
+        Long id = categoryService.createCategory(categoryRequest);
         return ResponseEntity.status(201).body(id);
     }
 
@@ -30,4 +30,6 @@ public class CategoryController {
         List<Category> categories = categoryService.getAllCategories();
         return ResponseEntity.status(200).body(categories);
     }
+
+
 }

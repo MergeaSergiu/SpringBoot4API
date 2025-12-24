@@ -12,6 +12,22 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  mail:
+    host: localhost
+    port: 1025
+    username: ""
+    password: ""
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: true
+  rabbitmq:
+    host: localhost
+    port: 5673
+    username: username
+    password: admin
 logging:
   level:
     root: INFO
