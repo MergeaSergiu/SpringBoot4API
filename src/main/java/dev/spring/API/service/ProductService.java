@@ -34,7 +34,7 @@ public class ProductService {
     public Long createProduct(ProductRequest productRequest){
 
         Optional<Category> category = categoryRepository.findById(productRequest.categoryId());
-        if(category.isEmpty()) throw new RuntimeException("Category not found");
+        if(category.isEmpty()) throw new EntityNotFoundException("Category not found");
         Product newProduct = new Product();
         newProduct.setName(productRequest.name());
         newProduct.setPrice(productRequest.price());
@@ -74,5 +74,11 @@ public class ProductService {
                 product.getUpdatedDate(),
                 product.getCategory().getId()
         );
+    }
+
+    public List<ProductResponse> getProductsByCategory(Long categoryId) {
+
+        List<Product> products = productRepository.findAllByCategory(categoryId);
+        return products.stream().map(this::toDto).toList();
     }
 }

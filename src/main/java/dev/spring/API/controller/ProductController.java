@@ -6,6 +6,7 @@ import dev.spring.API.model.Product;
 import dev.spring.API.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +35,12 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(@RequestParam Long id){
          productService.deleteProduct(id);
          return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/categories/{categoryId}")
+    public ResponseEntity<List<ProductResponse>> getAllProductsByCategory(@PathVariable Long categoryId){
+         List<ProductResponse> productResponses = productService.getProductsByCategory(categoryId);
+         return ResponseEntity.ok(productResponses);
     }
 
 }
