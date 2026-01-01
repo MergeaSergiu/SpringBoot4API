@@ -37,4 +37,10 @@ public class ProductController {
          return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/categories/{categoryId}")
+    public ResponseEntity<List<ProductResponse>> getAllProductsByCategory(@PathVariable Long categoryId){
+         List<ProductResponse> productResponses = productService.getProductsByCategory(categoryId);
+         return ResponseEntity.ok(productResponses);
+    }
+
 }

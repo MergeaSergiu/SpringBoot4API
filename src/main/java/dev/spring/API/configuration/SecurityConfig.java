@@ -38,14 +38,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/api/user/login", "/api/user/register").permitAll()
-//                        .anyRequest().authenticated()
-//                )
-//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -54,9 +46,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/user/login", "/api/user/register").permitAll()
                         // GET requests require ADMIN
                         .requestMatchers(HttpMethod.GET, "/api/products").hasRole("ADMIN")
-
-                        // POST requests require USER
                         .requestMatchers(HttpMethod.POST, "/api/products").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/products/categories/").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/products").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 //.oauth2ResourceServer(oauth2 -> oauth2.jwt());
