@@ -27,9 +27,8 @@ public class CartController {
                                                       Authentication authorization) {
 
         String username = helperUtils.extractUsername(authorization);
-        Cart cart = cartService.addItemToCart(cartItemRequest, username);
+        CartResponse cartResponse = cartService.addItemToCart(cartItemRequest, username);
 
-        CartResponse cartResponse = CartResponse.from(cart);
         return ResponseEntity.ok(cartResponse);
     }
 
@@ -38,5 +37,12 @@ public class CartController {
         String username = helperUtils.extractUsername(authorization);
         cartService.deleteCart(username);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/products/{productId}")
+    public ResponseEntity<CartResponse> removeItemFromCart(@PathVariable Long productId, Authentication authorization) {
+        String username = helperUtils.extractUsername(authorization);
+        CartResponse cartResponse = cartService.removeItemFromCart(productId, username);
+        return ResponseEntity.ok(cartResponse);
     }
 }

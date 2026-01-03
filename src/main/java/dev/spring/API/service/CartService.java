@@ -1,13 +1,14 @@
 package dev.spring.API.service;
 
 import dev.spring.API.Dto.CartItemRequest;
+import dev.spring.API.Dto.CartResponse;
+import dev.spring.API.helper.CartMapper;
 import dev.spring.API.model.Cart;
 import dev.spring.API.model.CartItem;
 import dev.spring.API.model.Product;
 import dev.spring.API.repository.CartItemRepository;
 import dev.spring.API.repository.CartRepository;
 import dev.spring.API.repository.ProductRepository;
-import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -18,15 +19,20 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
+    private final CartMapper cartMapper;
 
-    public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository, ProductRepository productRepository) {
+    public CartService(CartRepository cartRepository,
+                       CartItemRepository cartItemRepository,
+                       ProductRepository productRepository,
+                       CartMapper cartMapper) {
         this.cartRepository = cartRepository;
         this.cartItemRepository = cartItemRepository;
         this.productRepository = productRepository;
+        this.cartMapper = cartMapper;
     }
 
     @Transactional
-    public Cart addItemToCart(CartItemRequest cartItemRequest, String username ) {
+    public CartResponse addItemToCart(CartItemRequest cartItemRequest, String username ) {
         if(cartItemRequest.quantity() <= 0) throw new IllegalArgumentException("Quantity must be positive");
 
         Product product = productRepository.findById(cartItemRequest.productId()).orElseThrow(()->new EntityNotFoundException("Product not found"));
@@ -45,13 +51,14 @@ public class CartService {
                    .quantity(cartItemRequest.quantity())
                    .cart(cart)
                    .build();
+           cartItemRepository.save(cartItem);
+           cart.getItems().add(cartItem);
 
-           cart.addItem(cartItem);
        }else{
            cartItem.setQuantity(cartItem.getQuantity() + cartItemRequest.quantity());
        }
 
-       return cart;
+       return cartMapper.from(cart);
 
     }
 
@@ -61,5 +68,15 @@ public class CartService {
         // bulk delete items first
         cartItemRepository.deleteByCart(cart.getId());
         cartRepository.delete(cart);
+    }
+
+
+    @Transactional
+    public CartResponse removeItemFromCart(Long productId, String username) {
+        Cart cart = cartRepository.findCartByUsername(username).orElseThrow(()->new EntityNotFoundException("No cart found for this user"));
+        CartItem cartItem = cartItemRepository.findCartItemByProductAndCart(cart.getId(), productId);
+        cart.getItems().remove(cartItem);
+        cartItemRepository.delete(cartItem);
+        return cartMapper.from(cart);
     }
 }

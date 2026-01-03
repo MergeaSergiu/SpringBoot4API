@@ -8,11 +8,5 @@ public record CartItemResponse(
         int quantity
 ) {
 
-    public static CartItemResponse from(CartItem cartItem) {
-        return new CartItemResponse(
-                cartItem.getProduct().getId(),
-                cartItem.getProduct().getName(),
-                cartItem.getQuantity()
-        );
-    }
+
 }

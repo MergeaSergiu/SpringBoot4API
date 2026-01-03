@@ -19,7 +19,7 @@ public class Cart {
 
     @OneToMany(
             mappedBy = "cart",
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE}
+            orphanRemoval = true
     )
     private List<CartItem> items = new ArrayList<>();
 
@@ -32,15 +32,15 @@ public class Cart {
         this.createdDate = LocalDate.now();
     }
 
-    public void addItem(CartItem item){
-        this.items.add(item);
-        item.setCart(this);
-    }
-
-    public void removeItem(CartItem item){
-        this.items.remove(item);
-        item.setCart(null);
-    }
+//    public void addItem(CartItem item){
+//        this.items.add(item);
+//        item.setCart(this);
+//    }
+//
+//    public void removeItem(CartItem item){
+//        this.items.remove(item);
+//        item.setCart(null);
+//    }
 
     public Cart(String username, List<CartItem> items, LocalDate createdDate) {
         this.username = username;
