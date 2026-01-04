@@ -1,11 +1,14 @@
 package dev.spring.API.service;
 
+import dev.spring.API.Dto.ProfileResponse;
 import dev.spring.API.Dto.UserLoginRequest;
 import dev.spring.API.Dto.UserRegistrationRequest;
 import dev.spring.API.configuration.CognitoUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.usertype.UserType;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.cognitoidentity.CognitoIdentityAsyncClient;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
@@ -132,5 +135,15 @@ public class UserService {
         } catch (CognitoIdentityProviderException e) {
             throw new EntityNotFoundException(e.awsErrorDetails().errorMessage(), e);
         }
+    }
+
+    public ProfileResponse profileInformation(Authentication authentication) {
+        if(authentication == null) throw new EntityNotFoundException("No token");
+        if(authentication instanceof JwtAuthenticationToken) {
+            String username = (String) ((JwtAuthenticationToken) authentication).getTokenAttributes().get("username");
+            return new ProfileResponse(username);
+        }
+        return new ProfileResponse();
+
     }
 }
