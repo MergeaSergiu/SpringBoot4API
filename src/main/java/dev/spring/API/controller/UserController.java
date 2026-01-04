@@ -1,6 +1,7 @@
 package dev.spring.API.controller;
 
 
+import dev.spring.API.Dto.ProfileResponse;
 import dev.spring.API.Dto.UserLoginRequest;
 import dev.spring.API.Dto.UserRegistrationRequest;
 import dev.spring.API.service.UserService;
@@ -46,15 +47,12 @@ public class UserController {
     }
 
 
-//    @GetMapping("/me")
-//    public ResponseEntity<String> getProfile(Authentication authentication) {
-//        String principal = null;
-//        if(authentication == null) throw new EntityNotFoundException("No token");
-//        if(authentication instanceof JwtAuthenticationToken) {
-//            principal = (String) ((JwtAuthenticationToken) authentication).getTokenAttributes().get("username");
-//        }
-//        if(principal == null) throw new EntityNotFoundException("No token");
-//        return ResponseEntity.ok(principal);
-//    }
+    @GetMapping("/me")
+    public ResponseEntity<ProfileResponse> getProfile(Authentication authentication) {
+
+        ProfileResponse profileResponse = userService.profileInformation(authentication);
+        return ResponseEntity.ok(profileResponse);
+
+    }
 
 }
