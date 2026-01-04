@@ -32,5 +32,5 @@ public class CognitoRoleConverter implements Converter<
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
-    }
+}
 

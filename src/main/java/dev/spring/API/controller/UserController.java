@@ -7,9 +7,7 @@ import dev.spring.API.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,15 +46,15 @@ public class UserController {
     }
 
 
-    @GetMapping("/me")
-    public ResponseEntity<String> getProfile(Authentication authentication) {
-        String principal = null;
-        if(authentication == null) throw new EntityNotFoundException("No token");
-        if(authentication instanceof JwtAuthenticationToken) {
-            principal = (String) ((JwtAuthenticationToken) authentication).getTokenAttributes().get("username");
-        }
-        if(principal == null) throw new EntityNotFoundException("No token");
-        return ResponseEntity.ok(principal);
-    }
+//    @GetMapping("/me")
+//    public ResponseEntity<String> getProfile(Authentication authentication) {
+//        String principal = null;
+//        if(authentication == null) throw new EntityNotFoundException("No token");
+//        if(authentication instanceof JwtAuthenticationToken) {
+//            principal = (String) ((JwtAuthenticationToken) authentication).getTokenAttributes().get("username");
+//        }
+//        if(principal == null) throw new EntityNotFoundException("No token");
+//        return ResponseEntity.ok(principal);
+//    }
 
 }
