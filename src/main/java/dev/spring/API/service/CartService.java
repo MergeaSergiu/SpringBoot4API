@@ -13,6 +13,9 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 @Service
 public class CartService {
 
@@ -65,18 +68,21 @@ public class CartService {
     @Transactional
     public void deleteCart(String username) {
         Cart cart = cartRepository.findCartByUsername(username).orElseThrow(()->new EntityNotFoundException("No cart found for this user"));
-        // bulk delete items first
-        cartItemRepository.deleteByCart(cart.getId());
         cartRepository.delete(cart);
     }
 
 
     @Transactional
     public CartResponse removeItemFromCart(Long productId, String username) {
-        Cart cart = cartRepository.findCartByUsername(username).orElseThrow(()->new EntityNotFoundException("No cart found for this user"));
-        CartItem cartItem = cartItemRepository.findCartItemByProductAndCart(cart.getId(), productId);
-        cart.getItems().remove(cartItem);
-        cartItemRepository.delete(cartItem);
+        int deleted = cartItemRepository.deleteByUsernameAndProductId(username, productId);
+        if(deleted == 0) throw new EntityNotFoundException("No cart found for this user");
+        Cart cart = cartRepository.findCartByUsernameWithItems(username).orElseThrow(()->new EntityNotFoundException("No cart found for this user"));
         return cartMapper.from(cart);
+    }
+
+    public CartResponse getCart(String username) {
+       Cart cart =  cartRepository.findCartByUsernameWithItems(username).orElseThrow( () -> new EntityNotFoundException("No cart found for this user"));
+       return cartMapper.from(cart);
+
     }
 }

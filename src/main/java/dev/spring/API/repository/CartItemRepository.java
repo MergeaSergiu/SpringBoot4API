@@ -4,6 +4,7 @@ import dev.spring.API.model.CartItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
@@ -13,5 +14,12 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     @Modifying
     @Query("DELETE from CartItem cartitem where cartitem.cart.id = :cartId")
     void deleteByCart(Long cartId);
+
+    @Modifying
+    @Query(" DELETE FROM CartItem ci WHERE ci.cart.username = :username AND ci.product.id = :productId")
+    int deleteByUsernameAndProductId(
+            @Param("username") String username,
+            @Param("productId") Long productId
+    );
 
 }

@@ -12,7 +12,6 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     @Query("SELECT c from Cart c where c.username = :username")
     Optional<Cart> findCartByUsername(String username);
 
-    @Modifying
-    @Query("DELETE FROM Cart where username = :username")
-    void deleteByUsername(String username);
+    @Query("SELECT c from Cart c LEFT JOIN FETCH c.items where c.username = :username")
+    Optional<Cart> findCartByUsernameWithItems(String username);
 }

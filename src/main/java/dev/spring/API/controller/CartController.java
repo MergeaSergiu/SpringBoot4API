@@ -45,4 +45,11 @@ public class CartController {
         CartResponse cartResponse = cartService.removeItemFromCart(productId, username);
         return ResponseEntity.ok(cartResponse);
     }
+
+    @GetMapping
+    public ResponseEntity<CartResponse> getCart(Authentication authorization) {
+        String username = helperUtils.extractUsername(authorization);
+        CartResponse cartResponse = cartService.getCart(username);
+        return ResponseEntity.ok(cartResponse);
+    }
 }

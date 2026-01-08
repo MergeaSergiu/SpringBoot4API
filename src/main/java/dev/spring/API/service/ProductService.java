@@ -10,6 +10,8 @@ import dev.spring.API.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
@@ -50,9 +52,9 @@ public class ProductService {
         return Id;
     }
 
-    public List<ProductResponse> getAllProducts() {
+    public Page<ProductResponse> getAllProducts(Pageable pageable) {
         return
-                productRepository.findAll().stream().map(this::toDto).toList();
+                productRepository.findAll(pageable).map(this::toDto);
     }
 
     public void deleteProduct(Long id) {
@@ -76,9 +78,9 @@ public class ProductService {
         );
     }
 
-    public List<ProductResponse> getProductsByCategory(Long categoryId) {
-
-        List<Product> products = productRepository.findAllByCategory(categoryId);
-        return products.stream().map(this::toDto).toList();
+    public Page<ProductResponse> getProductsByCategory(Long categoryId, Pageable pageable) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
+        Page<Product> products = productRepository.findAllByCategory(category, pageable);
+        return products.map(this::toDto);
     }
 }
