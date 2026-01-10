@@ -4,15 +4,12 @@ import dev.spring.API.Dto.CartItemResponse;
 import dev.spring.API.Dto.CartResponse;
 import dev.spring.API.model.Cart;
 import dev.spring.API.model.CartItem;
-import jakarta.persistence.Table;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
 @Component
 public class CartMapper {
-
-
 
     public  CartResponse from(Cart cart) {
 
@@ -37,7 +34,8 @@ public class CartMapper {
         return new CartItemResponse(
                 cartItem.getProduct().getId(),
                 cartItem.getProduct().getName(),
-                cartItem.getQuantity()
+                cartItem.getQuantity(),
+                cartItem.getId()
         );
     }
 

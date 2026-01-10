@@ -9,12 +9,10 @@ import dev.spring.API.model.Product;
 import dev.spring.API.repository.CartItemRepository;
 import dev.spring.API.repository.CartRepository;
 import dev.spring.API.repository.ProductRepository;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 @Service
 public class CartService {
@@ -35,10 +33,9 @@ public class CartService {
     }
 
     @Transactional
-    public CartResponse addItemToCart(CartItemRequest cartItemRequest, String username ) {
-        if(cartItemRequest.quantity() <= 0) throw new IllegalArgumentException("Quantity must be positive");
+    public CartResponse addItemToCart(Long productId, String username ) {
 
-        Product product = productRepository.findById(cartItemRequest.productId()).orElseThrow(()->new EntityNotFoundException("Product not found"));
+        Product product = productRepository.findById(productId).orElseThrow(()->new EntityNotFoundException("Product not found"));
 
         Cart cart = cartRepository.findCartByUsername(username).orElseGet(
                 () -> {
@@ -48,19 +45,14 @@ public class CartService {
                 }
         );
         CartItem cartItem = cartItemRepository.findCartItemByProductAndCart(cart.getId(),  product.getId());
-        if(cartItem == null) {
-           cartItem = CartItem.builder()
+        if(cartItem != null) throw new EntityExistsException("Cart Item already exists");
+        cartItem = CartItem.builder()
                    .product(product)
-                   .quantity(cartItemRequest.quantity())
+                   .quantity(1)
                    .cart(cart)
                    .build();
            cartItemRepository.save(cartItem);
            cart.getItems().add(cartItem);
-
-       }else{
-           cartItem.setQuantity(cartItem.getQuantity() + cartItemRequest.quantity());
-       }
-
        return cartMapper.from(cart);
 
     }
@@ -84,5 +76,14 @@ public class CartService {
        Cart cart =  cartRepository.findCartByUsernameWithItems(username).orElseThrow( () -> new EntityNotFoundException("No cart found for this user"));
        return cartMapper.from(cart);
 
+    }
+
+    public CartResponse updateItemInCart(CartItemRequest cartItemRequest, String username) {
+        CartItem cartItem = cartItemRepository.findById(cartItemRequest.cartItemId()).orElseThrow(()->new EntityNotFoundException("No cart item was found"));
+        if(cartItemRequest.quantity() < 1) throw new EntityNotFoundException("Cart item quantity is less than 1");
+        cartItem.setQuantity(cartItemRequest.quantity());
+        cartItemRepository.save(cartItem);
+        Cart cart = cartRepository.findCartByUsername(username).orElseThrow(()->new EntityNotFoundException("No cart found for this user"));
+        return cartMapper.from(cart);
     }
 }

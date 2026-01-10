@@ -3,7 +3,6 @@ package dev.spring.API.controller;
 import dev.spring.API.Dto.CartItemRequest;
 import dev.spring.API.Dto.CartResponse;
 import dev.spring.API.helper.HelperUtils;
-import dev.spring.API.model.Cart;
 import dev.spring.API.service.CartService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +22,18 @@ public class CartController {
     }
 
     @PostMapping
-    public ResponseEntity<CartResponse> addItemInCart(@RequestBody @Valid CartItemRequest cartItemRequest,
+    public ResponseEntity<CartResponse> addItemInCart(@RequestParam Long productId,
                                                       Authentication authorization) {
 
         String username = helperUtils.extractUsername(authorization);
-        CartResponse cartResponse = cartService.addItemToCart(cartItemRequest, username);
+        CartResponse cartResponse = cartService.addItemToCart(productId, username);
+        return ResponseEntity.ok(cartResponse);
+    }
 
+    @PutMapping
+    public ResponseEntity<CartResponse> updateItemInCart(@RequestBody @Valid CartItemRequest cartItemRequest ,Authentication authorization) {
+        String username = helperUtils.extractUsername(authorization);
+        CartResponse cartResponse = cartService.updateItemInCart(cartItemRequest,username);
         return ResponseEntity.ok(cartResponse);
     }
 
